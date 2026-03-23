@@ -215,3 +215,5 @@ vault.json
 # Any local testing secrets
 secrets.py
 test_vault.json
+.idea/misc.xml
+.idea/workspace.xml
