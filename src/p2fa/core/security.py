@@ -4,6 +4,16 @@ import base64
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
+
+def make_salt(
+) -> bytes:
+    """
+    Make the salt
+    """
+
+    return os.urandom(16)
+
+
 def derive_key(
         password: str,
         salt: bytes
@@ -11,7 +21,6 @@ def derive_key(
     """
     password to base64 key
     """
-
     kdf = Scrypt(
         salt = salt,
         length = 32,
@@ -58,5 +67,21 @@ def decrypt_password(
         password: str,
         salt: bytes,
         token: bytes
-) -> bytes:
-    ...
+) -> str:
+    # re derive the same key using the passed salt
+    key: bytes = derive_key(
+        password,
+        salt
+    )
+
+    f: Fernet = Fernet(
+        key
+    )
+
+    #decrypt the token
+    decrypt_token = f.decrypt(
+        token
+    )
+
+    # turn the binary back into a string
+    return decrypt_token.decode()
