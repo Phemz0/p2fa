@@ -68,6 +68,10 @@ def decrypt_password(
         salt: bytes,
         token: bytes
 ) -> str:
+    """
+    decrypts the password
+    """
+
     # re derive the same key using the passed salt
     key: bytes = derive_key(
         password,
