@@ -42,11 +42,9 @@ def add_to_vault(
                 salt,
             )
 
-            vault_data: dict = json.loads(
-                decrypted_str
-            )
+            vault_data: dict = json.loads(decrypted_str)
 
-        except exception:
+        except Exception:
             console.print("[red]Access denied. Incorrect master password[/red]")
             raise typer.Exit(1)
 
