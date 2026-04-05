@@ -1,10 +1,10 @@
 # presentation - cli, commands using typer
 
 import json
-from logging import exception
-
+import time
 import typer
 from rich.console import Console
+from rich.live import Live
 from rich.table import Table
 
 from p2fa.core import security, storage, service
@@ -72,7 +72,7 @@ def add_to_vault(
 @app.command()
 def get_p2fa(
 
-) -> str:
+) -> None:
 
     salt, encrypted_data = storage.load_p2fa()
 
@@ -96,36 +96,59 @@ def get_p2fa(
         console.print("[red]Access denied. Incorrect master password[/red]")
         raise typer.Exit(1)
 
+    with Live(gen_table(vault_data), refresh_per_second=5, console =  console) as live:
+        try:
+            while True:
+                time.sleep(1)
+
+                live.update(gen_table(vault_data))
+        except KeyboardInterrupt:
+            console.print("[red]Vault Locked[/red]")
+
+
+def gen_table(
+    vault_data: dict[str, str]
+) -> Table:
+
+    remaining = 30 - (int(time.time()) % 30)
+
     table = Table(
-        title = "2FA Codes",
-        style = "cyan"
+        title = "p2fa live vault",
+        style = "cyan",
+        show_footer = False,
     )
 
     table.add_column(
-        "Service", # header
+        "Service", # Header
         style = "magenta",
-        justify = "right"
+        justify = "right",
     )
 
     table.add_column(
-        "Code", # header
+        "Code", # Header
         style = "green",
         justify = "center",
-        width = 10
+        width = 10,
+    )
+
+    table.add_column(
+        "Expires In", # Header
+        style = "yellow",
+        justify = "center",
     )
 
     for svc_name, secret in vault_data.items():
-        code = service.gen_code(
+        code: str = service.gen_code(
             secret
         )
+        time_colour = "red" if remaining <= 5 else "green"
         table.add_row(
-            svc_name,
-            code
+            svc_name, # renderables
+            code,
+            f"[{time_colour}]{remaining}s[/{time_colour}]"
         )
 
-    console.print(
-        table
-    )
+    return table
 
 
 if __name__ == "__main__":
