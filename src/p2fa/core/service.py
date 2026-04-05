@@ -4,6 +4,9 @@ import pyotp
 def base_32(
     secret: str,
 ) -> str:
+    """
+    Adds the missing "=" padding
+    """
     secret = secret.replace(
         " ",
         ""
@@ -14,7 +17,6 @@ def base_32(
         secret
     ) % 8
 
-    # Adds the missing "=" padding
     if padding:
         secret += "=" * (8 - padding)
 
@@ -24,7 +26,9 @@ def base_32(
 def gen_code (
         secret: str
 ) -> str:
-
+    """
+    Takes the 2fa secret and returns an otp (6 digit code)
+    """
     fixed_secret = base_32(
         secret
     )
@@ -32,5 +36,5 @@ def gen_code (
     totp = pyotp.TOTP(
         fixed_secret
     )
-    # Takes the 2fa secret and returns an otp (6 digit code)
+
     return totp.now()
