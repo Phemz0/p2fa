@@ -64,9 +64,9 @@ def encrypt_password(
     )
 
 def decrypt_password(
+        token: bytes,
         password: str,
-        salt: bytes,
-        token: bytes
+        salt: bytes
 ) -> str:
     """
     decrypts the password
@@ -87,5 +87,4 @@ def decrypt_password(
         token
     )
 
-    # turn the binary back into a string
     return decrypt_token.decode()
