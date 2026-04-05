@@ -12,3 +12,9 @@ dependencies = [
     "rich>=14.3.3",
     "typer[all]>=0.24.1",
 ]
+
+[project.scripts]
+p2fa = "p2fa.main:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
