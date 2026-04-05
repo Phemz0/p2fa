@@ -16,18 +16,17 @@ def save_p2fa(
         "wb"
     ) as f:
 
-        f.write(salt)
-        f.write(encrypted_password)
+        f.write(salt + encrypted_password)
 
     # owner only permissions
     os.chmod(secure_path, 0o600)
 
 def load_p2fa(
 
-) -> tuple[bytes, bytes]:
+) -> tuple[None, None] | tuple[bytes, bytes]:
 
     if not secure_path.exists():
-        return b"", b""
+        return None, None
 
     with open(
         secure_path,
@@ -38,9 +37,9 @@ def load_p2fa(
             16
         )
 
-        password = f.read()
+        encrypted_password = f.read()
 
     return (
         salt,
-        password
+        encrypted_password
     )
