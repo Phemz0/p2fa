@@ -1,4 +1,4 @@
-# p2fa — Private 2FA
+# p2fa
 
 A self-hosted, encrypted CLI tool for managing two-factor authentication tokens. Built with Python, `uv`, `cryptography`, and `rich`.
 
