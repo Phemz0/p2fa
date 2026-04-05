@@ -23,8 +23,8 @@ def get_master_passwd(
 @app.command(name = "add")
 def add_to_vault(
     service_name: str,
-    secret: str
 ) -> None:
+    secret: str = typer.prompt("Enter 2FA secret", hide_input=True)
 
     password: str = get_master_passwd()
     salt, encrypted_data = storage.load_p2fa()
